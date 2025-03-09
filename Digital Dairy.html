@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Book</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { width: 300px; margin: 20px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 0px 10px gray; }
+        input { width: 100%; padding: 8px; margin: 5px 0; }
+        button { width: 100%; padding: 10px; margin: 10px 0; border: none; background: #28a745; color: white; font-size: 16px; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #218838; }
+        .contacts { text-align: left; margin-top: 10px; }
+        .contact { background: #e0e0e0; padding: 8px; margin: 5px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>馃摓 Phone Book</h2>
+        <button onclick="showAddContact()">鉃� Add Contact</button>
+        <button onclick="showContacts()">馃搵 Phone Book</button>
+
+        <div id="addContact" style="display: none;">
+            <input type="text" id="name" placeholder="Enter Name">
+            <input type="tel" id="phone" placeholder="Enter Phone Number">
+            <button onclick="saveContact()">馃捑 Save Contact</button>
+        </div>
+
+        <div id="contactList" class="contacts"></div>
+    </div>
+
+    <script>
+        function showAddContact() {
+            document.getElementById("addContact").style.display = "block";
+            document.getElementById("contactList").style.display = "none";
+        }
+
+        function showContacts() {
+            document.getElementById("addContact").style.display = "none";
+            document.getElementById("contactList").style.display = "block";
+            displayContacts();
+        }
+
+        function saveContact() {
+            let name = document.getElementById("name").value.trim();
+            let phone = document.getElementById("phone").value.trim();
+
+            if (name === "" || phone === "") {
+                alert("Please enter both name and phone number.");
+                return;
+            }
+
+            let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+            contacts.push({ name, phone });
+            localStorage.setItem("contacts", JSON.stringify(contacts));
+
+            alert("Contact Saved Successfully!");
+            document.getElementById("name").value = "";
+            document.getElementById("phone").value = "";
+        }
+
+        function displayContacts() {
+            let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+            let contactList = document.getElementById("contactList");
+            contactList.innerHTML = "<h3>Saved Contacts</h3>";
+
+            if (contacts.length === 0) {
+                contactList.innerHTML += "<p>No contacts found!</p>";
+                return;
+            }
+
+            contacts.forEach((contact, index) => {
+                contactList.innerHTML += `<div class="contact">
+                    <strong>${contact.name}</strong> - ${contact.phone}
+                    <button style="background:red;" onclick="deleteContact(${index})">馃棏 Delete</button>
+                </div>`;
+            });
+        }
+
+        function deleteContact(index) {
+            let contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+            contacts.splice(index, 1);
+            localStorage.setItem("contacts", JSON.stringify(contacts));
+            displayContacts();
+        }
+    </script>
+
+</body>
+</html>
